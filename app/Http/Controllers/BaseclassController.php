@@ -7,19 +7,30 @@ use App\Baseclass;
 
 class BaseclassController extends Controller
 {
-    public function index(Request $request, $id){
+    public function index(Request $request,$id){
         $id = $request->id;
+        // dd($id);
         $categorys = Baseclass::with('childCategory')->where('parent_id',$id)->get();
-        // $categorys = Baseclass::with('childCategory')->get();
-        // $categorys = Baseclass::with('allChildrenCategorys')->first();
         // dd($categorys);
-        return view('admin/base/'.$id )->with('base',$categorys);
-        // return view('admin/base')->with('base',$categorys);
+        if($id==1){
+            $parent_id = 1;
+        }else{
+            $parent_id = Baseclass::with('childCategory')->where('id',$id)->get(['parent_id'])->toArray();
+            // dd($parent_id[0]['parent_id']);
+            $parent_id = $parent_id[0]['parent_id'];
+        }
+        return view('admin/base/index')->with(['base'=>$categorys,'id'=>$id,'parent_id'=>$parent_id]);
     }
 
     public function create(Request $request, $id){
         $id = $request->id;
-        return view('admin/base/create',['id'=>$id]);
+        if($id==1){
+            $info_state = '0,1,2,3';
+        }else{
+            $categorys = Baseclass::with('childCategory')->where('id',$id)->get()->toArray();
+            $info_state = $categorys[0]['info_state'];
+        }
+        return view('admin/base/create',['id'=>$id,'info_state'=>$info_state]);
     }
 
     public function store(Request $request){
@@ -34,11 +45,11 @@ class BaseclassController extends Controller
         $Baseclass->name = $request->get('name');
         $Baseclass->en_name = $request->get('en_name');
         $Baseclass->hasSecond = $request->get('hasSecond');
-        $Baseclass->hasThird = $request->get('hasThird');
+        // $Baseclass->hasThird = $request->get('hasThird');
         $Baseclass->info_state =implode(',',$request->get('info_state'));
         $Baseclass->set_info_state = $request->get('set_info_state');
         if($Baseclass->save()){
-            return redirect('admin/base');
+            return redirect('admin/base/'.$Baseclass->parent_id);
         }else{
             return redirect()->back()->withInput()->withErrors('保存失败！');
         }
@@ -58,25 +69,32 @@ class BaseclassController extends Controller
             'en_name' => 'max:50'
         ]);
         $Baseclass  = new Baseclass;
+        $parent_id  = $request->get('parent_id');
         $sortnum    = $request->get('sortnum');
         $name       = $request->get('name');
         $en_name    = $request->get('en_name');
         $hasSecond  = $request->get('hasSecond');
-        $hasThird   = $request->get('hasThird');
+        // $hasThird   = $request->get('hasThird');
         $info_state = $request->get('info_state');
         $info_state = implode(',',$info_state);
         // dd($info_state);
         $set_info_state = $request->get('set_info_state');
-        $data = ['sortnum'=>trim($sortnum),'name'=>trim($name),'en_name'=>trim($en_name),'hasSecond'=>trim($hasSecond),'hasThird'=>trim($hasThird),'info_state'=>trim($info_state),'set_info_state'=>trim($set_info_state)];
+        $data = ['parent_id'=>trim($parent_id),'sortnum'=>trim($sortnum),'name'=>trim($name),'en_name'=>trim($en_name),'hasSecond'=>trim($hasSecond),'info_state'=>trim($info_state),'set_info_state'=>trim($set_info_state)];
         if($Baseclass->where('id',$id)->update($data)){
-            return redirect('admin/base');
+            return redirect('admin/base/'.$parent_id);
         }else{
             return redirect()->back()->withInput()->withErrors('保存信息失败！');
         }
     }
 
     public function destroy($id){
-        Baseclass::find($id)->delete();
-        return redirect()->back()->withInput()->withErrors('删除成功！');
+        $categorys = Baseclass::with('childCategory')->where('parent_id',$id)->get()->toArray();
+        // dd($categorys);
+        if($categorys!==[]){
+            return redirect()->back()->withInput()->withErrors('请先删除子栏目！');
+        }else{
+            Baseclass::find($id)->delete();
+            return redirect()->back()->withInput()->withErrors('删除成功！');
+        }
     }
 }

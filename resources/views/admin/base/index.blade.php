@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@extends('layouts.left')
 
 @section('content')
 <div class="container">
@@ -13,15 +14,17 @@
                         </div>
                     @endif
 
-                    <a href="{{ url('admin/base/create/'.($base or 0)) }}" class="btn btn-lg btn-primary">新增</a>
+
+                    <a href="{{ url('admin/base/create/'.$id) }}" class="btn btn-lg btn-primary">新增</a>
+                    <a href="{{ url('admin/base/'.$parent_id) }}" class="btn btn-lg btn-success">返回</a>
 
                     <table width="100%" border="1" collspacing="0" collspadding="5">
                         <tr>
                             <td>序号</td>
                             <td>栏目名称</td>
                             <td>栏目别称</td>
-                            <td>二级栏目</td>
-                            <td>三级栏目</td>
+                            <td>子栏目</td>
+                            {{-- <td>三级栏目</td> --}}
                             <td>展现形式</td>
                             <td>默认展现</td>
                             <td colspan="2">操作</td>
@@ -31,10 +34,10 @@
                                 $hasSecond = $base->hasSecond;
                                 $hasSecond = str_replace('0', '是', $hasSecond);
                                 $hasSecond = str_replace('1', '否', $hasSecond);
-                                $hasThird = $base->hasThird;
-                                $hasThird = str_replace('0', '是', $hasThird);
-                                $hasThird = str_replace('1', '否', $hasThird);
-                                $hasThird = str_replace('2', '自定义', $hasThird);
+                                // $hasThird = $base->hasThird;
+                                // $hasThird = str_replace('0', '是', $hasThird);
+                                // $hasThird = str_replace('1', '否', $hasThird);
+                                // $hasThird = str_replace('2', '自定义', $hasThird);
                                 $info_state = $base->info_state;
                                 $info_state = str_replace('0', '图文内容', $info_state);
                                 $info_state = str_replace('1', '新闻列表', $info_state);
@@ -53,11 +56,10 @@
                                 <td>{{ $base->en_name }}</td>
                                 <td>{{ $hasSecond }}
                                     @if ($hasSecond==='是')
-                                        <a href="{{ url('admin/base/create/'.$base->id) }}" class="btn btn-success">查看</a>
-                                        {{-- <a href="{{ url('admin/base?base_id='.$base->id) }}" class="btn btn-success">查看</a> --}}
+                                        <a href="{{ url('admin/base/'.$base->id) }}" class="btn btn-success">查看</a>
                                     @endif
                                 </td>
-                                <td>{{ $hasThird }}</td>
+                                {{-- <td>{{ $hasThird }}</td> --}}
                                 <td>{{ $info_state }}</td>
                                 <td>{{ $set_info_state }}</td>
                                 <td><a href="{{ url('admin/base/edit/'.$base->id) }}" class="btn btn-success">编辑</a></td>
@@ -71,7 +73,6 @@
                             </tr>
                         @endforeach
                     </table>
-
                 </div>
             </div>
         </div>

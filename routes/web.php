@@ -44,7 +44,7 @@ Route::group(['prefix' => 'admin'], function() {
     // 一级栏目
     Route::get('base/edit/{id}','BaseclassController@edit');
     Route::get('base/create/{id}','BaseclassController@create');
-    Route::get('base','BaseclassController@index');
+    Route::get('base/{id}','BaseclassController@index');
     Route::resource('base','BaseclassController');
     // 二级栏目
     Route::get('second/edit/{id}','SecondclassController@edit');

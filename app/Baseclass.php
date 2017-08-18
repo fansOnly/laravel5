@@ -10,7 +10,7 @@ class Baseclass extends Model
         return $this->hasMany('App\Baseclass', 'parent_id', 'id');
     }
 
-    public function allChildrenCategorys(){
-        return $this->childCategory()->with('allChildrenCategorys');
-    }
+    // public function allChildrenCategorys(){
+    //     return $this->childCategory()->with('allChildrenCategorys');
+    // }
 }

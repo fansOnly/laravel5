@@ -11,7 +11,7 @@
 
                     <a href="{{ url('admin/article') }}" class="btn btn-lg btn-success ">管理文章</a>
                     <a href="{{ url('admin/recycle') }}" class="btn btn-lg btn-success ">回收站</a>
-                    <a href="{{ url('admin/base') }}" class="btn btn-lg btn-success ">新建栏目</a>
+                    <a href="{{ url('admin/base/1') }}" class="btn btn-lg btn-success ">新建栏目</a>
                     <a href="{{ url('admin/test') }}" class="btn btn-lg btn-success ">测试</a>
                 </div>
             </div>
